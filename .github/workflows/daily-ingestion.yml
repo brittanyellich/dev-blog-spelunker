@@ -1,0 +1,92 @@
+name: Daily Feed Ingestion
+
+on:
+  schedule:
+    # Run every day at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      force_full_scan:
+        description: 'Force full scan of all feeds'
+        required: false
+        default: 'false'
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  ingest-feeds:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Validate feed registry
+      run: |
+        python -m src.feeds.feed_registry validate
+        
+    - name: Ingest RSS feeds
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COPILOT_API_KEY: ${{ secrets.COPILOT_API_KEY }}
+        FORCE_FULL_SCAN: ${{ github.event.inputs.force_full_scan }}
+      run: |
+        python -m src.pipeline.ingest_pipeline
+        
+    - name: Process and classify articles
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COPILOT_API_KEY: ${{ secrets.COPILOT_API_KEY }}
+      run: |
+        python -m src.pipeline.classification_pipeline
+        
+    - name: Generate daily summary
+      run: |
+        python -m src.pipeline.summary_pipeline
+        
+    - name: Commit new data
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Check if there are any changes to commit
+        if [[ $(git status --porcelain) ]]; then
+          git add data/
+          git commit -m "Daily ingestion: $(date +'%Y-%m-%d')"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: ingestion-logs
+        path: |
+          logs/
+          data/raw/
+        retention-days: 7

@@ -1,0 +1,90 @@
+name: Feed Discovery
+
+on:
+  schedule:
+    # Run monthly on the 1st at 10 AM UTC
+    - cron: '0 10 1 * *'
+  workflow_dispatch:
+    inputs:
+      discovery_sources:
+        description: 'Comma-separated discovery sources (all,github,blog-rolls,social)'
+        required: false
+        default: 'all'
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  discover-feeds:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Discover new feeds
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COPILOT_API_KEY: ${{ secrets.COPILOT_API_KEY }}
+        DISCOVERY_SOURCES: ${{ github.event.inputs.discovery_sources }}
+      run: |
+        python -m src.pipeline.discovery_pipeline
+        
+    - name: Validate discovered feeds
+      run: |
+        python -m src.feeds.feed_validator --validate-new
+        
+    - name: Create PR for new feeds
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Check if there are new feeds to add
+        if [[ -f "data/discovered/new-feeds.json" ]]; then
+          DISCOVERY_DATE=$(date +'%Y-%m-%d')
+          BRANCH_NAME="feed-discovery-$DISCOVERY_DATE"
+          
+          # Create new branch
+          git checkout -b "$BRANCH_NAME"
+          
+          # Commit discovered feeds
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/discovered/
+          git commit -m "Discovered new feeds: $DISCOVERY_DATE"
+          git push --set-upstream origin "$BRANCH_NAME"
+          
+          # Create PR
+          gh pr create \
+            --title "🔍 New Feed Discovery - $DISCOVERY_DATE" \
+            --body-file "data/discovered/discovery-report.md" \
+            --label "feed-discovery" \
+            --assignee "brittanyellich"
+        else
+          echo "No new feeds discovered"
+        fi
+        
+    - name: Update feed health report
+      run: |
+        python -m src.monitoring.feed_health_monitor
+        
+    - name: Create issue for failed feeds
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if [[ -f "data/monitoring/failed-feeds.json" ]]; then
+          python -m src.monitoring.create_feed_issues
+        fi

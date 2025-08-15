@@ -1,0 +1,207 @@
+feeds:
+  # High-Authority Technical Blogs
+  - id: "netflix-tech-blog"
+    name: "Netflix Tech Blog"
+    url: "https://netflixtechblog.com/feed"
+    description: "Engineering blog from Netflix covering architecture, data, and platform engineering"
+    authority_score: 95
+    category_hints: 
+      - "technical_excellence"
+      - "process_culture"
+    tags: ["streaming", "microservices", "data", "platform"]
+    last_checked: null
+    status: "active"
+    
+  - id: "shopify-engineering"
+    name: "Shopify Engineering"
+    url: "https://shopify.engineering/blog.rss"
+    description: "Engineering insights from Shopify's development teams"
+    authority_score: 90
+    category_hints:
+      - "technical_excellence"
+      - "career_growth"
+    tags: ["ecommerce", "ruby", "scaling", "performance"]
+    last_checked: null
+    status: "active"
+    
+  - id: "stripe-blog"
+    name: "Stripe Blog"
+    url: "https://stripe.com/blog/feed"
+    description: "Engineering and product insights from Stripe"
+    authority_score: 92
+    category_hints:
+      - "technical_excellence"
+      - "impact_purpose"
+    tags: ["payments", "apis", "fintech", "developer-experience"]
+    last_checked: null
+    status: "active"
+    
+  - id: "uber-engineering"
+    name: "Uber Engineering"
+    url: "https://eng.uber.com/rss/"
+    description: "Engineering blog covering Uber's technical challenges and solutions"
+    authority_score: 88
+    category_hints:
+      - "technical_excellence"
+      - "mental_models_problem_solving"
+    tags: ["mobile", "distributed-systems", "machine-learning", "real-time"]
+    last_checked: null
+    status: "active"
+
+  # Leadership & Management Blogs
+  - id: "lara-hogan"
+    name: "Lara Hogan"
+    url: "https://larahogan.me/blog/feed/"
+    description: "Engineering leadership and management insights"
+    authority_score: 85
+    category_hints:
+      - "communication_collaboration"
+      - "leadership_mentoring"
+    tags: ["management", "leadership", "feedback", "teams"]
+    last_checked: null
+    status: "active"
+    
+  - id: "rands-in-repose"
+    name: "Rands in Repose"
+    url: "https://randsinrepose.com/feed/"
+    description: "Engineering leadership and management from Michael Lopp"
+    authority_score: 87
+    category_hints:
+      - "leadership_mentoring"
+      - "communication_collaboration"
+    tags: ["management", "leadership", "culture", "engineering-management"]
+    last_checked: null
+    status: "active"
+
+  # Career Development Blogs
+  - id: "staff-eng"
+    name: "StaffEng"
+    url: "https://staffeng.com/rss.xml"
+    description: "Stories and advice for reaching Staff+ engineering roles"
+    authority_score: 80
+    category_hints:
+      - "career_growth"
+      - "leadership_mentoring"
+    tags: ["staff-engineer", "career", "technical-leadership"]
+    last_checked: null
+    status: "active"
+    
+  - id: "pragmatic-engineer"
+    name: "The Pragmatic Engineer"
+    url: "https://blog.pragmaticengineer.com/rss/"
+    description: "Engineering career advice and industry insights"
+    authority_score: 88
+    category_hints:
+      - "career_growth"
+      - "communication_collaboration"
+    tags: ["career", "engineering-culture", "compensation", "growth"]
+    last_checked: null
+    status: "active"
+
+  # Technical Deep Dives
+  - id: "high-scalability"
+    name: "High Scalability"
+    url: "http://highscalability.com/rss.xml"
+    description: "Building bigger, faster, more reliable websites"
+    authority_score: 82
+    category_hints:
+      - "technical_excellence"
+      - "mental_models_problem_solving"
+    tags: ["scalability", "architecture", "performance", "distributed-systems"]
+    last_checked: null
+    status: "active"
+    
+  - id: "martin-fowler"
+    name: "Martin Fowler"
+    url: "https://martinfowler.com/feed.atom"
+    description: "Software development insights from Martin Fowler"
+    authority_score: 95
+    category_hints:
+      - "technical_excellence"
+      - "mental_models_problem_solving"
+    tags: ["software-architecture", "refactoring", "patterns", "methodology"]
+    last_checked: null
+    status: "active"
+
+  # Company Engineering Blogs
+  - id: "github-engineering"
+    name: "GitHub Engineering"
+    url: "https://github.blog/engineering.atom"
+    description: "Engineering insights from GitHub's development teams"
+    authority_score: 85
+    category_hints:
+      - "technical_excellence"
+      - "process_culture"
+    tags: ["git", "developer-tools", "collaboration", "platform"]
+    last_checked: null
+    status: "active"
+    
+  - id: "airbnb-engineering"
+    name: "Airbnb Engineering"
+    url: "https://medium.com/feed/airbnb-engineering"
+    description: "Engineering and data science at Airbnb"
+    authority_score: 87
+    category_hints:
+      - "technical_excellence"
+      - "impact_purpose"
+    tags: ["data-science", "machine-learning", "mobile", "web"]
+    last_checked: null
+    status: "active"
+
+  # Productivity & Work-Life Integration
+  - id: "cal-newport"
+    name: "Cal Newport"
+    url: "http://www.calnewport.com/blog/feed/"
+    description: "Deep work and productivity insights"
+    authority_score: 82
+    category_hints:
+      - "work_life_integration"
+      - "mental_models_problem_solving"
+    tags: ["productivity", "deep-work", "focus", "career"]
+    last_checked: null
+    status: "active"
+
+# Feed Discovery Sources
+discovery_sources:
+  github_topics:
+    - "engineering-blog"
+    - "developer-blog"
+    - "tech-blog"
+  
+  blog_aggregators:
+    - "https://engineeringblogs.xyz/"
+    - "https://github.com/kilimchoi/engineering-blogs"
+  
+  social_platforms:
+    - platform: "twitter"
+      search_terms: ["engineering blog", "developer blog", "tech blog"]
+    - platform: "hackernews"
+      search_terms: ["Show HN: Blog", "engineering blog"]
+
+# Feed Health Monitoring
+health_monitoring:
+  check_interval_hours: 24
+  timeout_seconds: 30
+  retry_attempts: 3
+  error_threshold: 5  # Mark as failed after 5 consecutive errors
+  
+  quality_metrics:
+    min_posts_per_month: 1
+    max_days_since_last_post: 90
+    min_content_length: 500
+
+# Feed Validation Rules
+validation_rules:
+  required_fields: ["title", "link", "description"]
+  max_feed_size_mb: 10
+  max_items_per_feed: 100
+  content_language: "en"
+  
+  excluded_domains:
+    - "spam-example.com"
+    - "low-quality-blog.com"
+  
+  excluded_keywords:
+    - "casino"
+    - "cryptocurrency mining"
+    - "get rich quick"

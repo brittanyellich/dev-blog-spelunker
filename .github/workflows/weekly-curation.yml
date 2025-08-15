@@ -1,0 +1,118 @@
+name: Weekly Curation
+
+on:
+  schedule:
+    # Run every Monday at 8 AM UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+    inputs:
+      week_override:
+        description: 'Override week (YYYY-WXX format, e.g., 2024-W01)'
+        required: false
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  generate-reading-lists:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Validate classified data
+      run: |
+        python -m src.validation.data_validator --check-classified
+        
+    - name: Generate weekly rankings
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COPILOT_API_KEY: ${{ secrets.COPILOT_API_KEY }}
+        WEEK_OVERRIDE: ${{ github.event.inputs.week_override }}
+      run: |
+        python -m src.pipeline.ranking_pipeline
+        
+    - name: Curate reading lists
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COPILOT_API_KEY: ${{ secrets.COPILOT_API_KEY }}
+      run: |
+        python -m src.pipeline.curation_pipeline
+        
+    - name: Generate exports
+      run: |
+        python -m src.pipeline.export_pipeline
+        
+    - name: Update GitHub Pages content
+      run: |
+        python -m src.pipeline.pages_pipeline
+        
+    - name: Commit curated content
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        WEEK=$(date +'%Y-W%U')
+        if [[ -n "${{ github.event.inputs.week_override }}" ]]; then
+          WEEK="${{ github.event.inputs.week_override }}"
+        fi
+        
+        if [[ $(git status --porcelain) ]]; then
+          git add data/ docs/reading-lists/ exports/
+          git commit -m "Weekly curation: $WEEK"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: docs/reading-lists/
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+      
+    - name: Create release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        WEEK=$(date +'%Y-W%U')
+        if [[ -n "${{ github.event.inputs.week_override }}" ]]; then
+          WEEK="${{ github.event.inputs.week_override }}"
+        fi
+        
+        gh release create "$WEEK" \
+          --title "Weekly Reading List - $WEEK" \
+          --notes-file "data/curated/weekly/$WEEK.md" \
+          "exports/rss/*.xml" \
+          "exports/api/latest.json"
