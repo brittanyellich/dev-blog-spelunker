@@ -1,0 +1,51 @@
+copilot:
+  model: "gpt-4"
+  temperature: 0.1  # Low temperature for consistent classification
+  max_tokens: 1000
+  timeout: 30
+  
+  classification:
+    batch_size: 10
+    min_confidence: 0.7
+    retry_on_failure: true
+    cache_results: true
+    max_categories_per_article: 3
+    
+  quality_assessment:
+    enabled: true
+    min_quality_score: 60
+    factors:
+      - "technical_accuracy"
+      - "writing_clarity" 
+      - "practical_applicability"
+      - "originality"
+      - "evidence_examples"
+    
+  summarization:
+    max_length: 200
+    style: "technical"
+    include_key_points: true
+    
+  trend_analysis:
+    enabled: true
+    analysis_frequency: "weekly"
+    min_articles_for_trend: 5
+    trend_categories:
+      - "emerging_technologies"
+      - "industry_practices"
+      - "tooling_shifts"
+
+# Rate limiting and error handling
+api:
+  rate_limit_requests_per_minute: 50
+  max_retries: 3
+  retry_delay_seconds: 5
+  circuit_breaker_threshold: 10
+  cache_ttl_hours: 24
+
+# Monitoring and analytics
+monitoring:
+  track_classification_accuracy: true
+  log_failed_requests: true
+  collect_usage_metrics: true
+  alert_on_high_failure_rate: true

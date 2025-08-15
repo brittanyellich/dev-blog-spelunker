@@ -1,0 +1,187 @@
+categories:
+  technical_excellence:
+    name: "🔧 Technical Excellence"
+    description: "Building skills that last beyond any framework"
+    weight: 1.0
+    keywords:
+      - "architecture"
+      - "performance"
+      - "code quality"
+      - "engineering practices"
+      - "technical debt"
+      - "scalability"
+      - "system design"
+      - "engineering culture"
+    examples:
+      - "Engineering blogs (Shopify, Stripe, Netflix tech blogs)"
+      - "Architecture decision records and case studies"
+      - "Performance optimization stories"
+      - "Code quality and maintainability pieces"
+    classification_prompts:
+      - "Does this article discuss engineering practices, architecture, or technical implementation?"
+      - "Is this about code quality, performance, or system design?"
+      - "Does this help engineers build better technical skills?"
+
+  communication_collaboration:
+    name: "💬 Communication & Collaboration"
+    description: "Because the best code means nothing if you can't work with humans"
+    weight: 1.0
+    keywords:
+      - "leadership"
+      - "team dynamics"
+      - "feedback"
+      - "collaboration"
+      - "communication"
+      - "management"
+      - "one-on-ones"
+      - "cross-functional"
+    examples:
+      - "Management and leadership blogs (Manager's Path, Lara Hogan, Camille Fournier)"
+      - "Team dynamics research"
+      - "Feedback and 1:1 best practices"
+      - "Cross-functional collaboration stories"
+    classification_prompts:
+      - "Is this about human interaction, teamwork, or leadership?"
+      - "Does this discuss communication skills or team collaboration?"
+      - "Is this relevant for working effectively with others?"
+
+  career_growth:
+    name: "🚀 Career & Growth"
+    description: "Intentional choices for long-term success"
+    weight: 1.0
+    keywords:
+      - "career development"
+      - "promotion"
+      - "salary negotiation"
+      - "skill development"
+      - "industry trends"
+      - "personal branding"
+      - "networking"
+      - "job searching"
+    examples:
+      - "Career development frameworks"
+      - "Salary negotiation and promotion strategies"
+      - "Industry trend analysis"
+      - "Personal branding for engineers"
+    classification_prompts:
+      - "Is this about career advancement or professional development?"
+      - "Does this help with skill development or industry navigation?"
+      - "Is this relevant for long-term career success?"
+
+  mental_models_problem_solving:
+    name: "🧠 Mental Models & Problem Solving"
+    description: "How we think about complex problems"
+    weight: 1.0
+    keywords:
+      - "decision making"
+      - "problem solving"
+      - "debugging"
+      - "systems thinking"
+      - "mental models"
+      - "critical thinking"
+      - "analysis"
+      - "frameworks"
+    examples:
+      - "Decision-making frameworks"
+      - "Systems thinking"
+      - "Debugging approaches that apply beyond code"
+    classification_prompts:
+      - "Does this teach problem-solving or thinking frameworks?"
+      - "Is this about debugging, analysis, or decision-making?"
+      - "Does this help with approaching complex problems?"
+
+  work_life_integration:
+    name: "⚖️ Work-Life Integration"
+    description: "Sustainable practices for long-term success"
+    weight: 1.0
+    keywords:
+      - "productivity"
+      - "work-life balance"
+      - "learning strategies"
+      - "health"
+      - "burnout"
+      - "time management"
+      - "habits"
+      - "wellness"
+    examples:
+      - "Managing technical debt in your life"
+      - "Learning strategies"
+      - "Health and productivity for engineers"
+    classification_prompts:
+      - "Is this about personal productivity or work-life balance?"
+      - "Does this discuss health, wellness, or sustainable practices?"
+      - "Is this relevant for managing personal effectiveness?"
+
+  leadership_mentoring:
+    name: "🌱 Leadership & Mentoring"
+    description: "Growing influence without formal authority"
+    weight: 1.0
+    keywords:
+      - "technical leadership"
+      - "mentoring"
+      - "influence"
+      - "coaching"
+      - "psychological safety"
+      - "team building"
+      - "servant leadership"
+      - "staff engineer"
+    examples:
+      - "Technical leadership"
+      - "Mentoring and being mentored"
+      - "Building psychological safety"
+    classification_prompts:
+      - "Is this about leadership or mentoring others?"
+      - "Does this discuss growing influence or building teams?"
+      - "Is this relevant for technical leadership roles?"
+
+  process_culture:
+    name: "🔄 Process & Culture"
+    description: "The systems that shape how we work"
+    weight: 1.0
+    keywords:
+      - "agile"
+      - "code review"
+      - "team processes"
+      - "culture"
+      - "ceremonies"
+      - "retrospectives"
+      - "continuous improvement"
+      - "DevOps"
+    examples:
+      - "Team dynamics"
+      - "Code review culture"
+      - "Agile/process improvements"
+    classification_prompts:
+      - "Is this about team processes or development practices?"
+      - "Does this discuss culture, ceremonies, or continuous improvement?"
+      - "Is this relevant for how teams work together?"
+
+  impact_purpose:
+    name: "🎯 Impact & Purpose"
+    description: "Making work meaningful"
+    weight: 1.0
+    keywords:
+      - "product thinking"
+      - "business context"
+      - "ethics"
+      - "social impact"
+      - "purpose"
+      - "user experience"
+      - "customer focus"
+      - "value creation"
+    examples:
+      - "Product thinking for engineers"
+      - "Understanding business context"
+      - "Ethical technology choices"
+    classification_prompts:
+      - "Is this about business impact or product thinking?"
+      - "Does this discuss ethics, purpose, or social responsibility?"
+      - "Is this relevant for understanding the 'why' behind engineering work?"
+
+# Global classification settings
+classification_settings:
+  min_relevance_threshold: 0.1  # Minimum score to be considered relevant
+  max_categories_per_article: 3  # Maximum categories to assign per article
+  score_normalization: true      # Whether to normalize scores to sum to 1.0
+  use_content_summary: true      # Whether to include article summaries in classification
+  use_metadata: true             # Whether to use tags, categories from source
